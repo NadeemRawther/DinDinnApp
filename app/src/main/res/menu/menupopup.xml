@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/incoming"
+        app:showAsAction="ifRoom"
+        android:title="Incoming" />
+    <item
+        app:showAsAction="ifRoom"
+        android:id="@+id/preparing"
+        android:title="Preparing"/>
+    <item
+        app:showAsAction="ifRoom"
+        android:id="@+id/collection"
+        android:title="Collection"/>
+    <item
+        app:showAsAction="ifRoom"
+        android:id="@+id/ingredients"
+        android:title="Xyz Restaurant"/>
+</menu>

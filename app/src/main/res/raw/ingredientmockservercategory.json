@@ -1,0 +1,18 @@
+{
+  "status": {
+    "success": true,
+    "statusCode": 200,
+    "message": "success"
+  },
+  "categ": [{
+    "id": 0,
+    "category": "Bento"
+  },{
+    "id": 1,
+    "category": "Main"
+  },{
+    "id": 2,
+    "category": "Appetizer"
+  }
+  ]
+}

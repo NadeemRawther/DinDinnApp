@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+<com.google.android.material.card.MaterialCardView
+
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/order_cards"
+    android:layout_width="match_parent"
+    android:layout_marginStart="15dp"
+    android:layout_marginEnd="15dp"
+    android:layout_height="match_parent">
+ <androidx.constraintlayout.widget.ConstraintLayout
+     android:layout_width="match_parent"
+     android:layout_height="match_parent">
+
+  <LinearLayout
+      android:id="@+id/linearLayout"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:background="@color/color_grey_100"
+      android:orientation="horizontal"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toTopOf="parent">
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:orientation="vertical"
+    android:layout_height="wrap_content">
+   <TextView
+       android:id="@+id/createdid"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="16dp"
+       android:layout_marginTop="16dp"
+       android:text="#552"
+       android:textSize="16sp"
+       android:textStyle="bold" />
+
+   <TextView
+       android:id="@+id/createdat"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginStart="16dp"
+       android:layout_marginTop="8dp"
+       android:layout_marginBottom="8dp"
+       android:text="at 12:30 pm"
+       android:textSize="10sp" />
+</LinearLayout>
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:orientation="vertical"
+      android:layout_height="wrap_content">
+  <LinearLayout
+      android:layout_width="wrap_content"
+      android:orientation="horizontal"
+      android:layout_gravity="end"
+      android:layout_marginEnd="16dp"
+      android:layout_marginTop="16dp"
+      android:layout_height="wrap_content">
+   <TextView
+       android:layout_width="wrap_content"
+       android:textSize="10sp"
+       android:layout_height="wrap_content"
+       android:text="Auto Reject">
+   </TextView>
+   <TextView
+       android:id="@+id/timeralarm"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:textSize="16sp"
+       android:text="0s">
+   </TextView>
+  </LinearLayout>
+
+   <LinearLayout
+       android:layout_width="wrap_content"
+       android:orientation="horizontal"
+       android:layout_gravity="end"
+       android:layout_marginEnd="16dp"
+       android:layout_marginTop="8dp"
+       android:layout_height="wrap_content">
+    <ProgressBar
+       android:id="@+id/progressBar"
+       style="?android:attr/progressBarStyleHorizontal"
+       android:layout_width="wrap_content"
+       android:layout_height="wrap_content"
+       android:layout_marginTop="20dp"
+       android:indeterminate="false"
+       android:max="100"
+       android:minHeight="50dp"
+       android:minWidth="200dp"
+       android:progress="1" />
+   </LinearLayout>
+  </LinearLayout>
+</LinearLayout>
+
+  <LinearLayout
+      android:layout_width="match_parent"
+      android:layout_height="match_parent"
+      android:layout_marginTop="120dp"
+      android:orientation="vertical"
+      app:layout_constraintBottom_toBottomOf="parent"
+      app:layout_constraintEnd_toEndOf="parent"
+      app:layout_constraintStart_toStartOf="parent"
+      app:layout_constraintTop_toBottomOf="@+id/linearLayout">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_marginTop="10dp"
+    android:layout_marginBottom="10dp"
+    android:layout_height="wrap_content">
+    <TextView
+        android:id="@+id/autorejecttext"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16sp"
+        android:layout_marginTop="8dp"
+        android:text="Auto Reject"/>
+    <Button
+        android:id="@+id/accept_button"
+        android:background="@drawable/button_bg"
+        android:layout_height="wrap_content"
+        android:layout_width="120dp"
+        android:layout_marginStart="120dp"
+        android:text="Accept">
+    </Button>
+
+</LinearLayout>
+      <View
+          android:layout_width="match_parent"
+          android:background="@color/color_grey_100"
+          android:layout_height="5dp">
+      </View>
+
+<androidx.recyclerview.widget.RecyclerView
+    android:id="@+id/recycleaddons"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_weight="0.5">
+</androidx.recyclerview.widget.RecyclerView>
+      <View
+          android:layout_width="match_parent"
+          android:background="@color/color_grey_100"
+          android:layout_height="5dp">
+      </View>
+<TextView
+    android:id="@+id/numberofitems"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="30dp"
+    android:paddingStart="20dp"
+    android:textSize="14sp"
+    android:text="2 Items">
+</TextView>
+  </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.card.MaterialCardView>
+</layout>

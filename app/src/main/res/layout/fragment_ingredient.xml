@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="orderViewModel"
+            type="com.nads.dindinnapp.ui.viewmodel.OrderViewModel" />
+    </data>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:background="@color/color_grey_100"
+    android:paddingTop="10dp"
+    android:layout_height="match_parent"
+    tools:context=".ui.ingredients.IngredientFrag">
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_for_tablayout"
+        android:orientation="horizontal"
+        app:itemBinding="@{orderViewModel.itemBinding2Modified}"
+        app:items="@{orderViewModel.items2}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/carnumberbutton"
+        tools:listitem="@layout/tabscategory" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclervss"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginEnd="5dp"
+        app:spanCount="2"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        tools:listitem="@layout/ingredient_screen">
+    </androidx.recyclerview.widget.RecyclerView>
+
+</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
