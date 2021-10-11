@@ -8,21 +8,18 @@ import androidx.lifecycle.ViewModel
 import com.hadilq.liveevent.LiveEvent
 import com.nads.dindinnapp.R
 import com.nads.dindinnapp.BR
-import com.nads.dindinnapp.api.DinDinnApiService
 import com.nads.dindinnapp.listeners.ItemSelectListener
 import com.nads.dindinnapp.models.*
-import com.nads.dindinnapp.repository.DinDinnRepository
 import com.nads.dindinnapp.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.plugins.RxJavaPlugins.onError
-
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
 import me.tatarka.bindingcollectionadapter2.OnItemBind
-import org.reactivestreams.Subscriber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -120,5 +117,4 @@ init {
 
             itemBinding.bindExtra(BR.listener,selectcartype )
         }
-
 }

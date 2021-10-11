@@ -46,9 +46,7 @@ class OrderFragment : Fragment() {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.orderViewModel = orderviewModel
 
-        // ============
 
-        //==================
 
 
         orderviewModel.getOrder()
@@ -63,6 +61,18 @@ class OrderFragment : Fragment() {
             }
         }
         orderviewModel.orderlist.observe(viewLifecycleOwner, buttonforfoods)
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

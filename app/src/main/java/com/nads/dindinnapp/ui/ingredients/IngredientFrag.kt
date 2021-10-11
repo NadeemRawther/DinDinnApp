@@ -1,8 +1,6 @@
 package com.nads.dindinnapp.ui.ingredients
 
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,23 +11,20 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.nads.dindinnapp.R
 import com.nads.dindinnapp.databinding.FragmentIngredientBinding
-import com.nads.dindinnapp.models.Categ
-import com.nads.dindinnapp.models.IngredientsModel
-import com.nads.dindinnapp.ui.order.OrderAdapter
+import com.nads.dindinnapp.models.*
 import com.nads.dindinnapp.ui.viewmodel.OrderViewModel
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.newFixedThreadPoolContext
 
 
 class IngredientFrag : Fragment() {
     private val orderviewModel by navGraphViewModels<OrderViewModel>(R.id.main_navigation){defaultViewModelProviderFactory}
     var ls=ArrayList<IngredientsModel>()
-
+    val bentolisted = mutableListOf<Bento>()
+    val mainlisted = mutableListOf<Main>()
+    val appetizerlisted = mutableListOf<Appetizer>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -50,21 +45,7 @@ class IngredientFrag : Fragment() {
         val selectedcat = Observer<Categ>(){it->
 
             methodForTabSelection(it.id,databinding)
-            val queryTextListener: SearchView.OnQueryTextListener
-            queryTextListener = object : SearchView.OnQueryTextListener {
-                override fun onQueryTextChange(newText: String): Boolean {
-                    Log.i("onQueryTextChange", newText)
-                    methodForTabSelection(it.id,databinding,newText)
-                    return true
-                }
 
-                override fun onQueryTextSubmit(query: String): Boolean {
-                    Log.i("onQueryTextSubmit", query)
-                    methodForTabSelection(it.id,databinding,query)
-                    return true
-                }
-            }
-            requireActivity().searchview.setOnQueryTextListener(queryTextListener)
 
         }
         orderviewModel.selecteditem.observe(viewLifecycleOwner,selectedcat)
@@ -73,35 +54,122 @@ class IngredientFrag : Fragment() {
     }
 
     private fun methodForTabSelection(id:Int,databinding:FragmentIngredientBinding,strval:String=""){
-               orderviewModel.getIngredients()
+                orderviewModel.getIngredients()
+
+
                val gotingredient = Observer<IngredientsModel> {it->
+                   bentolisted.clear()
+                   mainlisted.clear()
+                   appetizerlisted.clear()
+
+
+
+
+                   bentolisted.addAll(it.datas.get(0).bento)
+                   mainlisted.addAll(it.datas.get(1).main)
+                   appetizerlisted.addAll(it.datas.get(2).appetizer)
                    when(id){
-                       0->getBento(it,databinding,strval)
-                       1->getMain(it,databinding,strval)
-                       2->getAppetizer(it,databinding,strval)
+                       0->getBento(bentolisted,databinding,strval)
+                       1->getMain(mainlisted,databinding,strval)
+                       2->getAppetizer(appetizerlisted,databinding,strval)
                    }
+
+                   val queryTextListener: SearchView.OnQueryTextListener
+                   queryTextListener = object : SearchView.OnQueryTextListener {
+                       override fun onQueryTextChange(newText: String): Boolean {
+                           Log.i("onQueryTextChange", newText)
+                           bentolisted.clear()
+                           mainlisted.clear()
+                           appetizerlisted.clear()
+                           for (i in it.datas.get(0).bento){
+                               if (i.title.contains(newText)){
+                                   bentolisted.add(i)
+                               }
+                           }
+                           for (i in it.datas.get(1).main){
+                               if (i.title.contains(newText)){
+                                   mainlisted.add(i)
+                               }
+                           }
+                           for (i in it.datas.get(2).appetizer){
+                               if (i.title.contains(newText)){
+                                   appetizerlisted.add(i)
+                               }
+                           }
+
+                           when(id){
+                               0->getBento(bentolisted,databinding,newText)
+                               1->getMain(mainlisted,databinding,newText)
+                               2->getAppetizer(appetizerlisted,databinding,newText)
+                           }
+
+
+
+
+
+
+
+
+
+
+                           return true
+                       }
+
+                       override fun onQueryTextSubmit(query: String): Boolean {
+                           Log.i("onQueryTextSubmit", query)
+                           bentolisted.clear()
+                           mainlisted.clear()
+                           appetizerlisted.clear()
+                           for (i in it.datas.get(0).bento){
+                               if (i.title.contains(query)){
+                                   bentolisted.add(i)
+                               }
+                           }
+                           for (i in it.datas.get(1).main){
+                               if (i.title.contains(query)){
+                                   mainlisted.add(i)
+                               }
+                           }
+                           for (i in it.datas.get(2).appetizer){
+                               if (i.title.contains(query)){
+                                   appetizerlisted.add(i)
+                               }
+                           }
+
+                           when(id){
+                               0->getBento(bentolisted,databinding,query)
+                               1->getMain(mainlisted,databinding,query)
+                               2->getAppetizer(appetizerlisted,databinding,query)
+                           }
+                           return true
+                       }
+                   }
+                   requireActivity().searchview.setOnQueryTextListener(queryTextListener)
+
                }
         orderviewModel.ingredients.observe(viewLifecycleOwner,gotingredient)
     }
 
-    private fun getBento(it: IngredientsModel,databinding:FragmentIngredientBinding,strval:String) {
+
+
+    private fun getBento(it: MutableList<Bento>, databinding:FragmentIngredientBinding, strval:String) {
         databinding.recyclervss.apply {
             layoutManager = GridLayoutManager(requireActivity(), 2,RecyclerView.HORIZONTAL,false)
             adapter = IngredientAdapter(requireActivity(),it,0,strval)
             hasFixedSize()
         }
     }
-     private fun getMain(it:IngredientsModel,databinding:FragmentIngredientBinding,strval:String){
+     private fun getMain(it: MutableList<Main>, databinding:FragmentIngredientBinding, strval:String){
          databinding.recyclervss.apply {
              layoutManager = GridLayoutManager(requireActivity(), 2,RecyclerView.HORIZONTAL,false)
-             adapter = IngredientAdapter(requireActivity(),it,1,strval)
+             adapter = MainAdapter(requireActivity(),it,1,strval)
              hasFixedSize()
          }
      }
-    private fun getAppetizer(it:IngredientsModel,databinding:FragmentIngredientBinding,strval:String){
+    private fun getAppetizer(it: MutableList<Appetizer>, databinding:FragmentIngredientBinding, strval:String){
         databinding.recyclervss.apply {
             layoutManager = GridLayoutManager(requireActivity(), 2,RecyclerView.HORIZONTAL,false)
-            adapter = IngredientAdapter(requireActivity(),it,2,strval)
+            adapter = AppetizerAdapter(requireActivity(),it,2,strval)
             hasFixedSize()
         }
     }
