@@ -8,7 +8,9 @@ import android.view.LayoutInflater
 
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 
 import androidx.navigation.navGraphViewModels
@@ -18,7 +20,9 @@ import com.nads.dindinnapp.R
 import com.nads.dindinnapp.databinding.FragmentOrderBinding
 import com.nads.dindinnapp.models.Data
 import com.nads.dindinnapp.models.OrderModel
+import com.nads.dindinnapp.ui.viewmodel.HomeActivityViewModel
 import com.nads.dindinnapp.ui.viewmodel.OrderViewModel
+import com.nads.dindinnapp.ui.viewmodel.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -28,6 +32,7 @@ import io.reactivex.internal.util.BackpressureHelper.add
 
 @AndroidEntryPoint
 class OrderFragment : Fragment() {
+    private val activityViewModel: HomeActivityViewModel by viewModels { ViewModelFactory.getInstance() }
     private var myCompositeDisposable: CompositeDisposable? = null
    var ls=ArrayList<String>()
    private val orderviewModel by navGraphViewModels<OrderViewModel>(R.id.main_navigation){defaultViewModelProviderFactory}

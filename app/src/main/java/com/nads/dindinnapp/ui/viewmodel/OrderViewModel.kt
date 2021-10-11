@@ -12,6 +12,7 @@ import com.nads.dindinnapp.listeners.ItemSelectListener
 import com.nads.dindinnapp.models.*
 import com.nads.dindinnapp.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.core.Observer
@@ -109,6 +110,18 @@ init {
 
         }
     }
+
+
+    fun countdownTimer(remainingTime: Long, interval: Int): Flowable<Int> {
+        return Flowable.range(0, interval + 1)
+            .map { interval - it }
+            .repeat()
+            .skip(interval - remainingTime)
+            .concatMap { Flowable.just(it).delay(1, TimeUnit.SECONDS) }
+    }
+
+
+
     val itemBinding2Modified: OnItemBind<Categ> =
         OnItemBind { itemBinding, position, item ->
             itemBinding.set(

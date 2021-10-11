@@ -16,9 +16,9 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import com.google.android.material.navigation.NavigationView
 import android.widget.Toast
-
-
-
+import androidx.activity.viewModels
+import com.nads.dindinnapp.ui.viewmodel.HomeActivityViewModel
+import com.nads.dindinnapp.ui.viewmodel.ViewModelFactory
 
 
 @AndroidEntryPoint
@@ -31,11 +31,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var toolbars: Toolbar
     private lateinit var navview: NavigationView
 
-
+    private val activityViewModel: HomeActivityViewModel by viewModels { ViewModelFactory.getInstance() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding:ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
+        binding.homeactivityviewmodel = activityViewModel
+        binding.lifecycleOwner = this
         setContentView(binding.root)
         binding.menuicons.setColorFilter(R.color.black)
         binding.menuicons.setOnClickListener {
