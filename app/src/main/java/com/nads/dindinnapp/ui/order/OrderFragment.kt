@@ -61,7 +61,7 @@ class OrderFragment : Fragment() {
             lsd.addAll(newName.data)
             binding.recyclervs.apply {
                 layoutManager = LinearLayoutManager(requireActivity(),RecyclerView.HORIZONTAL,false)
-                adapter = OrderAdapter(requireActivity(),lsd)
+                adapter = OrderAdapter(requireActivity(),lsd,activityViewModel,viewLifecycleOwner)
                 hasFixedSize()
             }
         }
@@ -84,5 +84,9 @@ class OrderFragment : Fragment() {
         return binding.root
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        activityViewModel.fragmentdestroyed.value = true
+    }
 
 }

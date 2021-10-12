@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 
 data class Data(
     @SerializedName("addon")
-    val addon: List<Addon>,
+    val addon: MutableList<Addon>,
     @SerializedName("alerted_at")
     val alertedAt: String,
     @SerializedName("created_at")

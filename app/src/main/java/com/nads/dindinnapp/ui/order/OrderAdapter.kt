@@ -7,33 +7,30 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
-import androidx.navigation.findNavController
+import androidx.core.view.isVisible
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.nads.dindinnapp.R
 import com.nads.dindinnapp.databinding.OrderCardsBinding
 import com.nads.dindinnapp.models.Data
-import io.reactivex.Flowable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
-
-
-import io.reactivex.Observable
-import io.reactivex.schedulers.Schedulers
-
+import com.nads.dindinnapp.ui.viewmodel.HomeActivityViewModel
 import kotlinx.android.synthetic.main.order_cards.view.*
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.LocalTime
 import java.util.*
-import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 
 
-class OrderAdapter(context: Context, ls:ArrayList<Data>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeActivityViewModel,viewlifeowner:LifecycleOwner) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private val context: Context = context
     var lsd:ArrayList<Data> = ls
-
+    var viewmodel :HomeActivityViewModel = activityViewModel
+    var valuableseconds= ArrayList<Int>()
+    var viewowner = viewlifeowner
     companion object{
         const val item_viewtype = 1
         const val item_viewtype2 = 2
@@ -68,25 +65,41 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>) : RecyclerView.Adapter<
         val formattedDate = outputFormat.format(date)
         val difference = printDifference(date,endtime)
         val diffinminutes = difference/1000
-        holder.cardView.timeralarm.text = diffinminutes.toString()+"s"
+
         holder.cardView.createdat.text = "at " + formattedDate.toString()
         holder.cardView.setOnClickListener{
 
         }
-        Observable.timer(1,  TimeUnit.SECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .map { difference }
-            .distinctUntilChanged()
-            .subscribe {
+
+        viewmodel.tickerFlow(10)
+            .onEach {
+                Log.e("NadeemTime$diffinminutes",it.toString())
                 holder.cardView.timeralarm.text = it.toString()
+                if (it.toInt() ==0){
+                    holder.cardView.accept_button.text = "Okay"
+                    holder.cardView.progressBar.isVisible = false
+                    holder.cardView.autorejected.isVisible = false
+                    holder.cardView.timeralarm.isVisible = false
+
+
+                }
             }
+            .launchIn(viewmodel.viewModelScope) // or lifecycleScope or other
+       holder.cardView.recycleaddons.apply {
+               layoutManager = LinearLayoutManager(context)
+               adapter = AddonAdapter(context,lsd.get(position).addon)
+               hasFixedSize()
 
-
+       }
 
         holder.cardView.accept_button.setOnClickListener {
-
+            lsd.removeAt(position)
+            refreshView(position)
         }
 
+    }
+    fun refreshView(position: Int) {
+        notifyDataSetChanged()
     }
     fun printDifference(startDate: Date, endDate: Date):Int {
         //milliseconds
