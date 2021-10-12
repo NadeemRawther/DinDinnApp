@@ -2,6 +2,7 @@ package com.nads.dindinnapp.ui.order
 
 import android.content.Context
 import android.os.Build
+import android.os.CountDownTimer
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -22,6 +23,15 @@ import kotlinx.coroutines.flow.onEach
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import android.app.Notification
+import androidx.core.app.NotificationCompat
+
+import android.media.RingtoneManager
+
+import android.media.Ringtone
+
+
+
 
 
 class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeActivityViewModel,viewlifeowner:LifecycleOwner) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -64,6 +74,7 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
         val date = inputFormat.parse(lsd.get(position).createdAt)
         val formattedDate = outputFormat.format(date)
         val difference = printDifference(date,endtime)
+        val alerdiff = printDifference(date,alertedat)
         val diffinminutes = difference/1000
 
         holder.cardView.createdat.text = "at " + formattedDate.toString()
@@ -71,10 +82,26 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
 
         }
 
-        viewmodel.tickerFlow(10)
+        viewmodel.tickerFlow(diffinminutes.toLong())
             .onEach {
                 Log.e("NadeemTime$diffinminutes",it.toString())
                 holder.cardView.timeralarm.text = it.toString()
+                holder.cardView.progressBar.max = diffinminutes
+                holder.cardView.progressBar.setProgress(it.toInt())
+                if (it.toInt() == 5){
+                    val mBuilder: NotificationCompat.Builder = NotificationCompat.Builder(context)
+                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setContentTitle("Alert")
+                        .setContentText("Ends in some time")
+                        .setDefaults(Notification.DEFAULT_SOUND)
+                        .setAutoCancel(true)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                       mBuilder.build();
+                    } else {
+                         mBuilder.getNotification();
+                    }
+
+                }
                 if (it.toInt() ==0){
                     holder.cardView.accept_button.text = "Okay"
                     holder.cardView.progressBar.isVisible = false
@@ -85,7 +112,9 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
                 }
             }
             .launchIn(viewmodel.viewModelScope) // or lifecycleScope or other
-       holder.cardView.recycleaddons.apply {
+
+
+        holder.cardView.recycleaddons.apply {
                layoutManager = LinearLayoutManager(context)
                adapter = AddonAdapter(context,lsd.get(position).addon)
                hasFixedSize()

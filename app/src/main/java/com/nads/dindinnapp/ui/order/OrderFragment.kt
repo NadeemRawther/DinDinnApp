@@ -12,6 +12,7 @@ import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.viewModelScope
 
 import androidx.navigation.navGraphViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -33,6 +34,7 @@ import io.reactivex.internal.util.BackpressureHelper.add
 @AndroidEntryPoint
 class OrderFragment : Fragment() {
     private val activityViewModel: HomeActivityViewModel by viewModels { ViewModelFactory.getInstance() }
+
     private var myCompositeDisposable: CompositeDisposable? = null
    var ls=ArrayList<String>()
    private val orderviewModel by navGraphViewModels<OrderViewModel>(R.id.main_navigation){defaultViewModelProviderFactory}
@@ -50,8 +52,6 @@ class OrderFragment : Fragment() {
         val binding:FragmentOrderBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_order,container,false)
         binding.lifecycleOwner = viewLifecycleOwner
         binding.orderViewModel = orderviewModel
-
-
 
 
         orderviewModel.getOrder()

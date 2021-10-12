@@ -37,6 +37,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         val binding:ActivityMainBinding = ActivityMainBinding.inflate(layoutInflater)
         binding.homeactivityviewmodel = activityViewModel
+
         binding.lifecycleOwner = this
         setContentView(binding.root)
         binding.menuicons.setColorFilter(R.color.black)
