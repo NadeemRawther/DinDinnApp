@@ -16,6 +16,7 @@ import com.nads.dindinnapp.models.Bento
 import com.nads.dindinnapp.models.Main
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.ingredient_screen.view.*
+import kotlinx.android.synthetic.main.order_list.view.*
 
 class AddonAdapter(context: Context, ls: MutableList<Addon>)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>()
@@ -54,7 +55,8 @@ class AddonAdapter(context: Context, ls: MutableList<Addon>)
         holder.cardView.setOnClickListener{
 
         }
-
+        holder.cardView.textView4.text =  "x " + lsd.get(position).quantity.toString()
+        holder.cardView.textView3.text = lsd.get(position).title
     }
 
 
