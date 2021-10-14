@@ -1,13 +1,21 @@
 package com.nads.dindinnapp.ui.order
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Context
+import android.content.Intent
 import android.os.Build
-import android.os.CountDownTimer
+import android.provider.Settings.Global.getString
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.RemoteViews
 import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.view.isVisible
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.viewModelScope
@@ -16,6 +24,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nads.dindinnapp.R
 import com.nads.dindinnapp.databinding.OrderCardsBinding
 import com.nads.dindinnapp.models.Data
+import com.nads.dindinnapp.ui.activity.MainActivity
 import com.nads.dindinnapp.ui.viewmodel.HomeActivityViewModel
 import kotlinx.android.synthetic.main.order_cards.view.*
 import kotlinx.coroutines.flow.launchIn
@@ -23,19 +32,14 @@ import kotlinx.coroutines.flow.onEach
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import android.app.Notification
-import androidx.core.app.NotificationCompat
-
 import android.media.RingtoneManager
-
-import android.media.Ringtone
-
+import android.net.Uri
 
 
-
-
-class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeActivityViewModel,viewlifeowner:LifecycleOwner) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
+class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeActivityViewModel,viewlifeowner:LifecycleOwner)
+    : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val notificationId:Int = 123
+    private val CHANNEL_ID = "THISID"
     private val context: Context = context
     var lsd:ArrayList<Data> = ls
     var viewmodel :HomeActivityViewModel = activityViewModel
@@ -74,7 +78,7 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
         val date = inputFormat.parse(lsd.get(position).createdAt)
         val formattedDate = outputFormat.format(date)
         val difference = printDifference(date,endtime)
-        val alerdiff = printDifference(date,alertedat)
+        val alerdiff = printDifference(date,alertedat)/1000
         val diffinminutes = difference/1000
 
         holder.cardView.createdat.text = "at " + formattedDate.toString()
@@ -88,18 +92,8 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
                 holder.cardView.timeralarm.text = it.toString()
                 holder.cardView.progressBar.max = diffinminutes
                 holder.cardView.progressBar.setProgress(it.toInt())
-                if (it.toInt() == 5){
-                    val mBuilder: NotificationCompat.Builder = NotificationCompat.Builder(context)
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle("Alert")
-                        .setContentText("Ends in some time")
-                        .setDefaults(Notification.DEFAULT_SOUND)
-                        .setAutoCancel(true)
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                       mBuilder.build();
-                    } else {
-                         mBuilder.getNotification();
-                    }
+                if (it.toInt() == alerdiff){
+                 notifyalarm()
 
                 }
                 if (it.toInt() ==0){
@@ -153,6 +147,40 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
 //        )
         return different.toInt()
     }
+
+
+    fun notifyalarm(){
+  /*
+        val intent = Intent(context, MainActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val alarmSound: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
+
+
+
+        val builder = NotificationCompat.Builder(context.applicationContext, CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Alert")
+            .setContentText("Time is To End")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            //.setSound(alarmSound)
+            .setOnlyAlertOnce(true)
+            .setSound(Uri.parse("android.resource://"
+                + context.getPackageName() + "/" + R.raw.notificationalert));
+        NotificationManagerCompat.from(context).apply {
+            notify(notificationId, builder.build())
+        }
+        */
+        val notification = RingtoneManager.getRingtone(context,Uri.parse("android.resource://"
+                + context.getPackageName() + "/" + R.raw.notificationalert))
+
+        notification.play()
+    }
+
+
     override fun getItemCount(): Int {
         return lsd.size
     }

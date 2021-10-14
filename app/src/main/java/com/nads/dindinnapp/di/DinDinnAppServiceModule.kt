@@ -69,12 +69,6 @@ object DinDinnAppServiceModule {
         return service
     }
 
-
-
-
-
-
-
     class IntTypeAdapter : TypeAdapter<Number?>() {
         @Throws(IOException::class)
         override fun write(out: JsonWriter, value: Number?) {
