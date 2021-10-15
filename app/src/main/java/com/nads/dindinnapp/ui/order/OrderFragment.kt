@@ -54,7 +54,7 @@ class OrderFragment : Fragment() {
         // Inflate the layout for this fragment
 
         val binding:FragmentOrderBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_order,container,false)
-        binding.lifecycleOwner = viewLifecycleOwner
+        binding.lifecycleOwner = requireActivity()
         binding.orderViewModel = orderviewModel
 
 
@@ -105,7 +105,6 @@ class OrderFragment : Fragment() {
     }
     override fun onDestroy() {
         super.onDestroy()
-        activityViewModel.fragmentdestroyed.value = true
     }
 
 }

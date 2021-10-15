@@ -2,6 +2,7 @@ package com.nads.dindinnapp.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.CountDownTimer
 import android.view.Menu
 import android.view.MenuItem
 import com.nads.dindinnapp.R
@@ -77,5 +78,10 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return super.onOptionsItemSelected(item)
 
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        activityViewModel.arr.clear()
     }
 }

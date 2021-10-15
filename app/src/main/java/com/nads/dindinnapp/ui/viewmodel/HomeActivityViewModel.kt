@@ -23,6 +23,7 @@ import kotlin.time.Duration
 class HomeActivityViewModel:BaseViewModel() {
 
    var fragmentdestroyed = MutableLiveData<Boolean>()
+   var arr = arrayListOf<Int?>()
 
     fun display( j:Long): CompositeDisposable? {
       val timeobserver =Observable.interval( j, TimeUnit.SECONDS)

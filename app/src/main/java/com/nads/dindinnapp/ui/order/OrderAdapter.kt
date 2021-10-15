@@ -34,13 +34,17 @@ import java.util.*
 import kotlin.collections.ArrayList
 import android.media.RingtoneManager
 import android.net.Uri
+import android.os.CountDownTimer
+import androidx.lifecycle.lifecycleScope
 
 
 class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeActivityViewModel,viewlifeowner:LifecycleOwner)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val notificationId:Int = 123
+
     private val CHANNEL_ID = "THISID"
     private val context: Context = context
+    var timer: CountDownTimer? = null
     var lsd:ArrayList<Data> = ls
     var viewmodel :HomeActivityViewModel = activityViewModel
     var valuableseconds= ArrayList<Int>()
@@ -85,28 +89,66 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
         holder.cardView.setOnClickListener{
 
         }
+        if (viewmodel.arr.size != 0 && viewmodel.arr.get(position) != null) {
+            Log.e("Nads","GotValue")
+            viewmodel.tickerFlow(viewmodel.arr.get(position)!!.toLong())
+                .onEach {
+                    Log.e("NadeemTime$diffinminutes", it.toString())
+                    holder.cardView.timeralarm.text = it.toString()
+                    holder.cardView.progressBar.max = diffinminutes
+                    holder.cardView.progressBar.setProgress(it.toInt())
+                    viewmodel.arr.add(position, it.toInt())
+                    if (it.toInt() == alerdiff) {
+                        notifyalarm()
+                    }
+                    if (it.toInt() == 0) {
+                        holder.cardView.accept_button.text = "Okay"
+                        holder.cardView.progressBar.isVisible = false
+                        holder.cardView.autorejected.isVisible = false
+                        holder.cardView.timeralarm.isVisible = false
 
-        viewmodel.tickerFlow(diffinminutes.toLong())
-            .onEach {
-                Log.e("NadeemTime$diffinminutes",it.toString())
-                holder.cardView.timeralarm.text = it.toString()
-                holder.cardView.progressBar.max = diffinminutes
-                holder.cardView.progressBar.setProgress(it.toInt())
-                if (it.toInt() == alerdiff){
-                 notifyalarm()
 
+                    }
                 }
-                if (it.toInt() ==0){
-                    holder.cardView.accept_button.text = "Okay"
-                    holder.cardView.progressBar.isVisible = false
-                    holder.cardView.autorejected.isVisible = false
-                    holder.cardView.timeralarm.isVisible = false
+                .launchIn(viewmodel.viewModelScope) // or lifecycleScope or other
+        }
+        else{
+            viewmodel.tickerFlow(diffinminutes.toLong())
+                .onEach {
+                    Log.e("NadeemTime$diffinminutes", it.toString())
+                    holder.cardView.timeralarm.text = it.toString()
+                    holder.cardView.progressBar.max = diffinminutes
+                    holder.cardView.progressBar.setProgress(it.toInt())
+                    viewmodel.arr.add(position, it.toInt())
+                    if (it.toInt() == alerdiff) {
+                        notifyalarm()
 
-
+                    }
+                    if (it.toInt() == 0) {
+                        holder.cardView.accept_button.text = "Okay"
+                        holder.cardView.progressBar.isVisible = false
+                        holder.cardView.autorejected.isVisible = false
+                        holder.cardView.timeralarm.isVisible = false
+                    }
                 }
+                .launchIn(viewmodel.viewModelScope) // or lifecycleScope or other
+        }
+            /*
+        timer?.cancel()
+
+        val eta = 5000
+        val interval = 1000 // every 1 sec
+        timer = object : CountDownTimer(eta.toLong(), interval.toLong()) {
+            override fun onTick(millisUntilFinished: Long) {
+                // oversimplified version
+                holder.cardView.timeralarm.text  = "${millisUntilFinished/1000} seconds left"
             }
-            .launchIn(viewmodel.viewModelScope) // or lifecycleScope or other
 
+            override fun onFinish() {
+                holder.cardView.timeralarm.text = "offer expired"
+            }
+        }
+*/
 
         holder.cardView.recycleaddons.apply {
                layoutManager = LinearLayoutManager(context)

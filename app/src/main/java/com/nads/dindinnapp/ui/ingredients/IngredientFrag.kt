@@ -36,7 +36,7 @@ class IngredientFrag : Fragment() {
     ): View? {
 
         val databinding:FragmentIngredientBinding = DataBindingUtil.inflate(inflater,R.layout.fragment_ingredient,container,false)
-        databinding.lifecycleOwner = viewLifecycleOwner
+        databinding.lifecycleOwner = this
         databinding.orderViewModel = orderviewModel
 
 
