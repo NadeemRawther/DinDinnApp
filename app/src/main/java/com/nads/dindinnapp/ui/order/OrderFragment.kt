@@ -5,14 +5,12 @@ import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -30,9 +28,7 @@ import com.nads.dindinnapp.ui.viewmodel.OrderViewModel
 import com.nads.dindinnapp.ui.viewmodel.ViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.schedulers.Schedulers
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.internal.util.BackpressureHelper.add
+import kotlinx.coroutines.cancel
 
 
 @AndroidEntryPoint
@@ -42,9 +38,9 @@ class OrderFragment : Fragment() {
     private var myCompositeDisposable: CompositeDisposable? = null
    var ls=ArrayList<String>()
    private val orderviewModel by navGraphViewModels<OrderViewModel>(R.id.main_navigation){defaultViewModelProviderFactory}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
 
     override fun onCreateView(
@@ -65,26 +61,11 @@ class OrderFragment : Fragment() {
             lsd.addAll(newName.data)
             binding.recyclervs.apply {
                 layoutManager = LinearLayoutManager(requireActivity(),RecyclerView.HORIZONTAL,false)
-                adapter = OrderAdapter(requireActivity(),lsd,activityViewModel,viewLifecycleOwner)
+                adapter = OrderAdapter(requireActivity(),lsd,activityViewModel,viewLifecycleOwner,orderviewModel)
                 hasFixedSize()
             }
         }
         orderviewModel.orderlist.observe(viewLifecycleOwner, buttonforfoods)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         return binding.root
     }
     private fun createNotificationChannel() {
@@ -103,8 +84,14 @@ class OrderFragment : Fragment() {
             notificationManager.createNotificationChannel(channel)
         }
     }
-    override fun onDestroy() {
-        super.onDestroy()
+
+    override fun onPause() {
+        super.onPause()
+      orderviewModel.viewModelScope.coroutineContext.cancel()
+
     }
+
+
+
 
 }

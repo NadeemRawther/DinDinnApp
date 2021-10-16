@@ -1,7 +1,9 @@
 package com.nads.dindinnapp.ui.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.databinding.ObservableArrayList
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
@@ -19,6 +21,8 @@ import io.reactivex.rxjava3.core.Observer
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.launchIn
 import me.tatarka.bindingcollectionadapter2.OnItemBind
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -81,6 +85,20 @@ init {
         }
     }
 
+
+    fun tickerFlow(period: Long, initialDelay:Long = 0) = flow{
+        delay(initialDelay)
+        var count = period
+        while (true) {
+            emit(count)
+            count = count-1
+            delay(1000)
+            if (count < 0){
+                break
+            }
+
+        }
+    }
 
 
     fun getOrder() {

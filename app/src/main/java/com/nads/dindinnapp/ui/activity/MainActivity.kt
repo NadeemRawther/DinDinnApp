@@ -18,8 +18,10 @@ import androidx.navigation.ui.AppBarConfiguration
 import com.google.android.material.navigation.NavigationView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.viewModelScope
 import com.nads.dindinnapp.ui.viewmodel.HomeActivityViewModel
 import com.nads.dindinnapp.ui.viewmodel.ViewModelFactory
+import kotlinx.coroutines.cancel
 
 
 @AndroidEntryPoint
@@ -82,6 +84,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+
 
     }
 }

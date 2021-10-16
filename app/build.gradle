@@ -75,6 +75,7 @@ dependencies {
     //liveevent
     implementation "com.github.hadilq.liveevent:liveevent:1.2.0"
     implementation "com.google.truth:truth:1.0.1"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:2.4.0-alpha01"
     // recycler databinding
     implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter:4.0.0'
     implementation 'me.tatarka.bindingcollectionadapter2:bindingcollectionadapter-recyclerview:4.0.0'

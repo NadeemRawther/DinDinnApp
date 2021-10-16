@@ -36,23 +36,23 @@ import android.media.RingtoneManager
 import android.net.Uri
 import android.os.CountDownTimer
 import androidx.lifecycle.lifecycleScope
+import com.nads.dindinnapp.ui.viewmodel.OrderViewModel
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 
-class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeActivityViewModel,viewlifeowner:LifecycleOwner)
+class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeActivityViewModel,viewlifeowner:LifecycleOwner
+                   ,orderViewModel: OrderViewModel)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-    private val notificationId:Int = 123
 
-    private val CHANNEL_ID = "THISID"
+    private val orderViewModels = orderViewModel
     private val context: Context = context
-    var timer: CountDownTimer? = null
+
     var lsd:ArrayList<Data> = ls
     var viewmodel :HomeActivityViewModel = activityViewModel
-    var valuableseconds= ArrayList<Int>()
-    var viewowner = viewlifeowner
-    companion object{
-        const val item_viewtype = 1
-        const val item_viewtype2 = 2
-    }
+
 
     class ViewHolder(view:OrderCardsBinding) : RecyclerView.ViewHolder(view.root){
         val cardView: CardView
@@ -69,6 +69,8 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
 
         return ViewHolder(orderCardsBinding)
     }
+    
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
@@ -86,43 +88,19 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
         val diffinminutes = difference/1000
 
         holder.cardView.createdat.text = "at " + formattedDate.toString()
-        holder.cardView.setOnClickListener{
-
-        }
-        if (viewmodel.arr.size != 0 && viewmodel.arr.get(position) != null) {
+        Log.e("NadeemTime$diffinminutes", "GOT")
+        if (!viewmodel.arr.isEmpty() && viewmodel.arr.get(position) != null) {
             Log.e("Nads","GotValue")
-            viewmodel.tickerFlow(viewmodel.arr.get(position)!!.toLong())
+          orderViewModels.tickerFlow(viewmodel.arr.get(position)!!.toLong())
                 .onEach {
-                    Log.e("NadeemTime$diffinminutes", it.toString())
+                    Log.e("NadeemTime$position", it.toString())
                     holder.cardView.timeralarm.text = it.toString()
                     holder.cardView.progressBar.max = diffinminutes
                     holder.cardView.progressBar.setProgress(it.toInt())
                     viewmodel.arr.add(position, it.toInt())
-                    if (it.toInt() == alerdiff) {
-                        notifyalarm()
-                    }
-                    if (it.toInt() == 0) {
-                        holder.cardView.accept_button.text = "Okay"
-                        holder.cardView.progressBar.isVisible = false
-                        holder.cardView.autorejected.isVisible = false
-                        holder.cardView.timeralarm.isVisible = false
-
-
-                    }
-                }
-                .launchIn(viewmodel.viewModelScope) // or lifecycleScope or other
-        }
-        else{
-            viewmodel.tickerFlow(diffinminutes.toLong())
-                .onEach {
-                    Log.e("NadeemTime$diffinminutes", it.toString())
-                    holder.cardView.timeralarm.text = it.toString()
-                    holder.cardView.progressBar.max = diffinminutes
-                    holder.cardView.progressBar.setProgress(it.toInt())
-                    viewmodel.arr.add(position, it.toInt())
-                    if (it.toInt() == alerdiff) {
-                        notifyalarm()
-
+                    if (it.toInt() == 290) {
+                       notifyalarm()
+                        Log.e("Alarm","NadeemAlarm")
                     }
                     if (it.toInt() == 0) {
                         holder.cardView.accept_button.text = "Okay"
@@ -131,24 +109,34 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
                         holder.cardView.timeralarm.isVisible = false
                     }
                 }
-                .launchIn(viewmodel.viewModelScope) // or lifecycleScope or other
-        }
-            /*
-        timer?.cancel()
+                .launchIn(orderViewModels.mainScope)
 
-        val eta = 5000
-        val interval = 1000 // every 1 sec
-        timer = object : CountDownTimer(eta.toLong(), interval.toLong()) {
-            override fun onTick(millisUntilFinished: Long) {
-                // oversimplified version
-                holder.cardView.timeralarm.text  = "${millisUntilFinished/1000} seconds left"
-            }
-
-            override fun onFinish() {
-                holder.cardView.timeralarm.text = "offer expired"
-            }
+        // or lifecycleScope or other
         }
-*/
+        else {
+        orderViewModels.tickerFlow(diffinminutes.toLong())
+                .onEach {
+                    Log.e("NadeemTime$position", it.toString())
+                    holder.cardView.timeralarm.text = it.toString()
+                    holder.cardView.progressBar.max = diffinminutes
+                    holder.cardView.progressBar.setProgress(it.toInt())
+                    viewmodel.arr.add(position, it.toInt())
+                    if (it.toInt() == 290) {
+                       notifyalarm()
+                        Log.e("Alarm","NadeemAlarm")
+
+                    }
+                    if (it.toInt() == 0) {
+                        holder.cardView.accept_button.text = "Okay"
+                        holder.cardView.progressBar.isVisible = false
+                        holder.cardView.autorejected.isVisible = false
+                        holder.cardView.timeralarm.isVisible = false
+                    }
+                }
+                .launchIn(orderViewModels.mainScope)
+                    // or lifecycleScope or other
+
+        }
 
         holder.cardView.recycleaddons.apply {
                layoutManager = LinearLayoutManager(context)
@@ -162,60 +150,32 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
             refreshView(position)
         }
 
+
     }
+
+
+
+
+
+
+
+
+
+
+
     fun refreshView(position: Int) {
         notifyDataSetChanged()
     }
     fun printDifference(startDate: Date, endDate: Date):Int {
-        //milliseconds
         var different = endDate.time - startDate.time
         println("startDate : $startDate")
         println("endDate : $endDate")
         println("different : $different")
-//        val secondsInMilli: Long = 1000
-//        val minutesInMilli = secondsInMilli * 60
-//        val hoursInMilli = minutesInMilli * 60
-//        val daysInMilli = hoursInMilli * 24
-//        val elapsedDays = different / daysInMilli
-//        different = different % daysInMilli
-//        val elapsedHours = different / hoursInMilli
-//        different = different % hoursInMilli
-//        val elapsedMinutes = different / minutesInMilli
-//        different = different % minutesInMilli
-//        val elapsedSeconds = different / secondsInMilli
-//        System.out.printf(
-//            "%d days, %d hours, %d minutes, %d seconds%n",
-//            elapsedDays, elapsedHours, elapsedMinutes, elapsedSeconds
-//        )
         return different.toInt()
     }
 
 
     fun notifyalarm(){
-  /*
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
-        val alarmSound: Uri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION)
-
-
-
-        val builder = NotificationCompat.Builder(context.applicationContext, CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Alert")
-            .setContentText("Time is To End")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-            //.setSound(alarmSound)
-            .setOnlyAlertOnce(true)
-            .setSound(Uri.parse("android.resource://"
-                + context.getPackageName() + "/" + R.raw.notificationalert));
-        NotificationManagerCompat.from(context).apply {
-            notify(notificationId, builder.build())
-        }
-        */
         val notification = RingtoneManager.getRingtone(context,Uri.parse("android.resource://"
                 + context.getPackageName() + "/" + R.raw.notificationalert))
 
