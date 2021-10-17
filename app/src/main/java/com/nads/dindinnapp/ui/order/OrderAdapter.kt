@@ -98,7 +98,7 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
                     holder.cardView.progressBar.max = diffinminutes
                     holder.cardView.progressBar.setProgress(it.toInt())
                     viewmodel.arr.add(position, it.toInt())
-                    if (it.toInt() == 290) {
+                    if (it.toInt() == alerdiff) {
                        notifyalarm()
                         Log.e("Alarm","NadeemAlarm")
                     }
@@ -121,7 +121,7 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
                     holder.cardView.progressBar.max = diffinminutes
                     holder.cardView.progressBar.setProgress(it.toInt())
                     viewmodel.arr.add(position, it.toInt())
-                    if (it.toInt() == 290) {
+                    if (it.toInt() == alerdiff) {
                        notifyalarm()
                         Log.e("Alarm","NadeemAlarm")
 
