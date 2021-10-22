@@ -69,8 +69,6 @@ class OrderFragment : Fragment() {
         return binding.root
     }
     private fun createNotificationChannel() {
-        // Create the NotificationChannel, but only on API 26+ because
-        // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = requireActivity().getString(R.string.channel_name)
             val descriptionText = requireActivity().getString(R.string.channel_description)
@@ -90,8 +88,5 @@ class OrderFragment : Fragment() {
       orderviewModel.viewModelScope.coroutineContext.cancel()
 
     }
-
-
-
 
 }

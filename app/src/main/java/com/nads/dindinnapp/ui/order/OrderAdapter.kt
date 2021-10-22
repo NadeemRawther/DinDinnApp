@@ -37,6 +37,10 @@ import android.net.Uri
 import android.os.CountDownTimer
 import androidx.lifecycle.lifecycleScope
 import com.nads.dindinnapp.ui.viewmodel.OrderViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.schedulers.Schedulers.from
+import io.reactivex.schedulers.Schedulers.from
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
@@ -100,7 +104,6 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
                     viewmodel.arr.add(position, it.toInt())
                     if (it.toInt() == alerdiff) {
                        notifyalarm()
-                        Log.e("Alarm","NadeemAlarm")
                     }
                     if (it.toInt() == 0) {
                         holder.cardView.accept_button.text = "Okay"
@@ -123,7 +126,6 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
                     viewmodel.arr.add(position, it.toInt())
                     if (it.toInt() == alerdiff) {
                        notifyalarm()
-                        Log.e("Alarm","NadeemAlarm")
 
                     }
                     if (it.toInt() == 0) {
@@ -138,13 +140,13 @@ class OrderAdapter(context: Context, ls:ArrayList<Data>,activityViewModel: HomeA
 
         }
 
+
+
         holder.cardView.recycleaddons.apply {
                layoutManager = LinearLayoutManager(context)
                adapter = AddonAdapter(context,lsd.get(position).addon)
                hasFixedSize()
-
        }
-
         holder.cardView.accept_button.setOnClickListener {
             lsd.removeAt(position)
             refreshView(position)

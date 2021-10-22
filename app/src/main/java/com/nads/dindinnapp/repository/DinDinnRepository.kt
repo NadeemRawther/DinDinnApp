@@ -9,7 +9,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-open class DinDinnRepository @Inject constructor(private val dinDinnApiService: DinDinnApiService)
+open class DinDinnRepository
 {
 
     suspend fun <T : Any> safeApiCall(call: suspend () -> Response<T>

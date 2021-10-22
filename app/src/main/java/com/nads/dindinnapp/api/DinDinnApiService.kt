@@ -11,11 +11,13 @@ import java.util.*
 
 interface DinDinnApiService {
     @GET("getorders")
-    suspend fun getorders():OrderModel
+    suspend fun getorders():Response<OrderModel>
 
     @GET("getcategory")
-    suspend fun getcategories():CategoryModel
+    suspend fun getcategories():Response<CategoryModel>
 
     @GET("getingredients")
-    suspend fun getingredients():IngredientsModel
+    suspend fun getingredients():Response<IngredientsModel>
+    @GET("getorders")
+    suspend fun getordersOb():Observable<in OrderModel>
 }

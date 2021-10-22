@@ -1,12 +1,10 @@
 package com.nads.dindinnapp.ui.viewmodel
 
-import android.content.Context
-import android.util.Log
+
+import android.os.CountDownTimer
 import androidx.databinding.ObservableArrayList
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
-import androidx.lifecycle.ViewModel
 import com.hadilq.liveevent.LiveEvent
 import com.nads.dindinnapp.R
 import com.nads.dindinnapp.BR
@@ -17,22 +15,19 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
-import io.reactivex.rxjava3.core.Observer
-import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
+import io.reactivex.rxjava3.subjects.BehaviorSubject
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.launchIn
 import me.tatarka.bindingcollectionadapter2.OnItemBind
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
-
 
 @HiltViewModel
 class OrderViewModel
 @Inject
-constructor(private val orderRepository: OrderRepository,private val savedStateHandle: SavedStateHandle):ViewModel(){
+constructor(private val orderRepository: OrderRepository,private val savedStateHandle: SavedStateHandle):BaseViewModel(){
     val loading = MutableLiveData<Boolean>()
     val items2 = ObservableArrayList<Categ>()
     val ingredients = MutableLiveData<IngredientsModel>()
@@ -41,18 +36,15 @@ constructor(private val orderRepository: OrderRepository,private val savedStateH
     protected val snackBarEventFire = LiveEvent<SnackBarEvent>()
     val snackBarEvent = snackBarEventFire
     val orderlist = LiveEvent<OrderModel>()
+
+    private val _tickerRx = BehaviorSubject.create<Long>()
+    val tickerRx:Observable<Long>
+    get() = _tickerRx
+
+
     private val parentJob = Job()
 
-    private val coroutineContext: CoroutineContext
-        get() = parentJob + Dispatchers.Default
 
-    private val coroutineMainContext: CoroutineContext
-        get() = parentJob + Dispatchers.Main
-
-    val scope = CoroutineScope(coroutineContext)
-    val mainScope = CoroutineScope(coroutineMainContext)
-
-    fun cancelAllRequests() = coroutineContext.cancel()
 
 init {
 
@@ -99,20 +91,30 @@ init {
 
         }
     }
+    fun tickerRx(period: Long,initialDelay: Long) = object :CountDownTimer(period,initialDelay){
+        override fun onTick(millisUntilFinished: Long) {
+            _tickerRx.subscribeOn(Schedulers.io())
 
+        }
+
+        override fun onFinish() {
+            TODO("Not yet implemented")
+        }
+
+    }
 
     fun getOrder() {
         mainScope.launch {
             loading.postValue(true)
             val response = orderRepository.getorders()
             loading.postValue(false)
-
             response?.let {
                 orderlist.value = it
             }
 
         }
     }
+
     fun getCategory() {
         mainScope.launch {
             loading.postValue(true)
@@ -120,7 +122,7 @@ init {
 
             loading.postValue(false)
             items2.clear()
-            response.categ.let {
+            response!!.categ.let {
                 items2.addAll(it)
 
             }
