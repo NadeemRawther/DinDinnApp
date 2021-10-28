@@ -3,6 +3,7 @@ package com.nads.dindinnapp.ui.viewmodel
 
 import android.os.CountDownTimer
 import androidx.databinding.ObservableArrayList
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.SavedStateHandle
 import com.hadilq.liveevent.LiveEvent
@@ -31,12 +32,13 @@ class OrderViewModel
 constructor(private val orderRepository: IOrderRepository):BaseViewModel(){
     val loading = MutableLiveData<Boolean>()
     val items2 = ObservableArrayList<Categ>()
+    val catitems = MutableLiveData<CategoryModel>()
     val ingredients = MutableLiveData<IngredientsModel>()
     var lastSelectedCategory = 0
     val selecteditem = LiveEvent<Categ>()
     protected val snackBarEventFire = LiveEvent<SnackBarEvent>()
     val snackBarEvent = snackBarEventFire
-    val orderlist = LiveEvent<OrderModel>()
+    val orderlist = MutableLiveData<OrderModel>()
 
     private val _tickerRx = BehaviorSubject.create<Long>()
     val tickerRx:Observable<Long>
@@ -123,8 +125,12 @@ init {
 
             loading.postValue(false)
             items2.clear()
+            response.let {
+                catitems.value = it
+            }
             response!!.categ.let {
                 items2.addAll(it)
+
 
             }
             selectcartype.onItemSelected(items2.get(0))
