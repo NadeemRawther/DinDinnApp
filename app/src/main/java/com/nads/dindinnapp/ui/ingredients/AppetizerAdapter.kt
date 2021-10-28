@@ -14,6 +14,8 @@ import com.nads.dindinnapp.models.Appetizer
 import com.nads.dindinnapp.models.Bento
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.ingredient_screen.view.*
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 
 class AppetizerAdapter(context: Activity, ls: MutableList<Appetizer>, id:Int, query:String = "")
     : RecyclerView.Adapter<RecyclerView.ViewHolder>()
@@ -37,6 +39,7 @@ class AppetizerAdapter(context: Activity, ls: MutableList<Appetizer>, id:Int, qu
         init {
             cardView = view.root.findViewById(R.id.ingredientcards)
         }
+
 
     }
 

@@ -10,6 +10,7 @@ import com.nads.dindinnapp.R
 import com.nads.dindinnapp.BR
 import com.nads.dindinnapp.listeners.ItemSelectListener
 import com.nads.dindinnapp.models.*
+import com.nads.dindinnapp.repository.IOrderRepository
 import com.nads.dindinnapp.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.Flowable
@@ -27,7 +28,7 @@ import javax.inject.Inject
 @HiltViewModel
 class OrderViewModel
 @Inject
-constructor(private val orderRepository: OrderRepository,private val savedStateHandle: SavedStateHandle):BaseViewModel(){
+constructor(private val orderRepository: IOrderRepository):BaseViewModel(){
     val loading = MutableLiveData<Boolean>()
     val items2 = ObservableArrayList<Categ>()
     val ingredients = MutableLiveData<IngredientsModel>()

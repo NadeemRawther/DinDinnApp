@@ -10,19 +10,19 @@ import javax.inject.Singleton
 
 @Singleton
 class OrderRepository @Inject constructor(private val dinDinnApiService: DinDinnApiService)
-    :DinDinnRepository(){
-   suspend fun getorders():OrderModel?{
+    :DinDinnRepository(), IOrderRepository {
+   override suspend fun getorders():OrderModel?{
        return safeApiCall(
            {dinDinnApiService.getorders()},
            errorMessage = "Got Order Error")
    }
 
-  suspend fun getcategories():CategoryModel?{
+  override suspend fun getcategories():CategoryModel?{
              return safeApiCall(call = {dinDinnApiService.getcategories()}
              ,errorMessage = "Got Category Error")
   }
 
-  suspend fun getingredients():IngredientsModel?{
+  override suspend fun getingredients():IngredientsModel?{
           return safeApiCall(call = {dinDinnApiService.getingredients()}
           ,errorMessage = "Got Category Error")
   }
