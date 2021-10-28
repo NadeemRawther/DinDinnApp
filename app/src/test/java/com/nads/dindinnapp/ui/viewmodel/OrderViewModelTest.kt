@@ -2,18 +2,31 @@ package com.nads.dindinnapp.ui.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.SmallTest
+import com.nads.dindinnapp.repository.FakeRepository
 import org.junit.Assert.*
+import org.junit.Before
 import org.junit.Rule
 
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
+@SmallTest
 class OrderViewModelTest {
 
 
     @get:Rule
     var instantExecutorRule = InstantTaskExecutorRule()
+    private lateinit var orderViewModel:OrderViewModel
+
+
+
+    @Before
+    fun setup(){
+       orderViewModel = OrderViewModel(FakeRepository())
+
+    }
 
 
     @Test

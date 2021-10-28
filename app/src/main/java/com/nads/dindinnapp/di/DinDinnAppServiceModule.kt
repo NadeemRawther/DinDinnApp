@@ -8,6 +8,8 @@ import com.google.gson.stream.JsonToken
 import com.google.gson.stream.JsonWriter
 import com.nads.dindinnapp.api.DinDinnApiService
 import com.nads.dindinnapp.models.OrderModel
+import com.nads.dindinnapp.repository.IOrderRepository
+import com.nads.dindinnapp.repository.OrderRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -68,6 +70,12 @@ object DinDinnAppServiceModule {
         val service: DinDinnApiService = retrofit.create(DinDinnApiService::class.java)
         return service
     }
+
+    @Singleton
+    @Provides
+    fun providerepository(apiService: DinDinnApiService)=
+        OrderRepository(apiService) as IOrderRepository
+
 
     class IntTypeAdapter : TypeAdapter<Number?>() {
         @Throws(IOException::class)
